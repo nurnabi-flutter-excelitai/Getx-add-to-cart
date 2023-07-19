@@ -157,6 +157,21 @@ class ProductCartController extends GetxController {
   }
 }
 
+
+class ProductCartItemController extends GetxController {
+  RxInt quantity = RxInt(0);
+
+  void incrementQuantity() {
+    quantity.value++;
+  }
+
+  void decrementQuantity() {
+    if (quantity.value > 0) {
+      quantity.value--;
+    }
+  }
+}
+
 class ProductCartScreen extends StatelessWidget {
   final ProductCartController controller = Get.put(ProductCartController());
   final NewProductModel newProductModel;
@@ -189,6 +204,8 @@ class ProductCartScreen extends StatelessWidget {
           ),
           itemCount: newProductModel.categoryList.length,
           itemBuilder: (context, index) {
+            final ProductCartItemController itemController = Get.put(ProductCartItemController(), tag: index.toString());
+
             return Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -219,7 +236,6 @@ class ProductCartScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         Obx(() {
                           return Visibility(
                             visible: controller.showOverflowBoxList[index].value,
@@ -244,26 +260,35 @@ class ProductCartScreen extends StatelessWidget {
                                           color: Colors.white,
                                           child: Center(
                                             child: GestureDetector(
-                                              onTap: () {},
+                                              onTap: () {
+                                                itemController.decrementQuantity();
+                                              },
                                               child: Icon(Icons.minimize, color: Colors.black, size: 14),
                                             ),
                                           ),
                                         ),
-                                        Container(
-                                          height: 25,
-                                          width: 30,
-                                          color: Colors.white,
-                                          child: Center(
-                                            child: Text('1', style: TextStyle(color: Colors.black)),
-                                          ),
-                                        ),
+                                        Obx(() {
+                                          return Container(
+                                            height: 25,
+                                            width: 30,
+                                            color: Colors.white,
+                                            child: Center(
+                                              child: Text(
+                                                itemController.quantity.value.toString(),
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                            ),
+                                          );
+                                        }),
                                         Container(
                                           height: 25,
                                           width: 30,
                                           color: Colors.white,
                                           child: Center(
                                             child: GestureDetector(
-                                              onTap: () {},
+                                              onTap: () {
+                                                itemController.incrementQuantity();
+                                              },
                                               child: Icon(Icons.add_circle, color: Colors.black, size: 14),
                                             ),
                                           ),
@@ -305,6 +330,8 @@ class ProductCartScreen extends StatelessWidget {
     );
   }
 }
+
+
 
 
 
