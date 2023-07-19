@@ -204,7 +204,12 @@ class ProductCartScreen extends StatelessWidget {
           ),
           itemCount: newProductModel.categoryList.length,
           itemBuilder: (context, index) {
-            final ProductCartItemController itemController = Get.put(ProductCartItemController(), tag: index.toString());
+            ProductCartItemController itemController;
+            try {
+              itemController = Get.find<ProductCartItemController>(tag: index.toString());
+            } catch (e) {
+              itemController = Get.put<ProductCartItemController>(ProductCartItemController(), tag: index.toString());
+            }
 
             return Container(
               width: double.infinity,
@@ -330,6 +335,9 @@ class ProductCartScreen extends StatelessWidget {
     );
   }
 }
+
+
+
 
 
 
